@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { useFormValues } from "../hooks/useGetValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isEqual } from "lodash";
 import { IconTrash, IconPlus, IconSubmit } from "../Icons";
 
 import * as z from "zod";
@@ -17,7 +18,7 @@ const formSchema = z.object({
       id: z.string().optional(),
       name: z.string().min(1, "* Required field"),
       last_name: z.string().min(1, "* Required field"),
-      _destroy: z.string().optional(),
+      _destroy: z.boolean().optional(),
     })
   ),
 });
@@ -32,14 +33,18 @@ const initialValues = {
   ],
 };
 
-export const Form = () => {
+type FormProps = {
+  data: FormValues;
+};
+
+export const Form = ({ data }: FormProps) => {
   const { storedValues, handleStoreValues } = useFormValues();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: initialValues,
+    defaultValues: data || initialValues,
   });
-  const { control, handleSubmit, formState: { errors } } = form;
+  const { control, handleSubmit, formState: { errors, touchedFields } } = form;
   
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -48,6 +53,7 @@ export const Form = () => {
   });
 
   const onSubmit = (values: FormValues) => {
+    handleStoreValues(fields);
     console.log(values);
   };
 
@@ -62,7 +68,7 @@ export const Form = () => {
 
     return update(itemIndex, {
       ...fields[itemIndex],
-      _destroy: "1",
+      _destroy: true,
     } as ItemProps);
   };
 
@@ -73,34 +79,29 @@ export const Form = () => {
   //   } as ItemProps);
   // };
 
+
   const activeFields = fields.filter(
     (item: ItemProps) => !item._destroy
   ).length;
 
+
   useEffect(() => {
-    handleStoreValues(fields);
-  }, [fields, storedValues]);
+    const updatedItems = fields.map((item, index) => {
+      if (touchedFields.items) {
+        const touched = touchedFields.items[index] !== undefined;
+        return { ...item, touched };
+      }
+      return item;
+    });
+
+    handleStoreValues(updatedItems);
+  }, [fields]);
+
 
   return (
     <FormProvider {...form}>
       <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
         <h2>Form Field Arrays</h2>
-        <button
-          className="btn btn-sm btn-outline"
-          onClick={() => {
-            const values = form.getValues();
-            console.log(values.items, 'values');
-          }}
-        >values
-        </button>
-        <button
-          className="btn btn-sm btn-outline"
-          onClick={() => {
-            const values = errors;
-            console.log(values, 'errors');
-          }}
-        >errors
-        </button>
         <div className="flex flex-col justify-between h-full">
           <div>
             {fields.map((field, index) => {

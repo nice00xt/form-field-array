@@ -4,7 +4,7 @@ import Form from './components/Form'
 import Overview from './components/Overview'
 import { FormValuesProvider } from './components/hooks/useGetValues'
 
-const defaultValues = {
+const serverValues = {
   items: [
     {
       id: "19si3ld54jdn",
@@ -24,11 +24,11 @@ function App() {
     <FormValuesProvider>
       <div className="flex flex-col w-full lg:flex-row">
         <Content>
-          <Form />
+          <Form data={serverValues} />
         </Content>
         <div className="divider lg:divider-horizontal"></div> 
         <Content>
-          <Overview values={defaultValues} />
+          <Overview  />
         </Content>
       </div>
     </FormValuesProvider>

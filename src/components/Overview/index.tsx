@@ -1,8 +1,8 @@
-import { IconInfo } from "../Icons";
 import { useFormValues } from "../hooks/useGetValues";
-import type { ItemProps, OverviewProps } from "../types";
+import { InfoTooltip } from "./InfoTooltip";
+import type { ItemProps } from "../types";
 
-const Overview = ({ values }: OverviewProps) => {
+const Overview = () => {
   const { storedValues } = useFormValues();
 
   if (!storedValues) return null;
@@ -12,19 +12,18 @@ const Overview = ({ values }: OverviewProps) => {
       <h2>Overview</h2>
       <div className="mt-5 text-left w-full lg:max-w-[400px]">
         <pre className='mb-2'><code className='text-white'>Items: [</code></pre>
-        {storedValues.map(({ id, name, last_name, _destroy, form_id }: ItemProps, index: number) => {
+        {storedValues.map(({ id, name, last_name, _destroy, form_id, touched }: ItemProps, index: number) => {
           return (
             <div key={index} className={`indicator first-letter:after:mb-4 py-4 rounded-lg mx-4 block mb-4 w-auto px-2 transition-all ${_destroy ? "bg-slate-800" : "bg-slate-700"}`}>
               {(id === "" && !_destroy) && <span className="indicator-item badge badge-success right-[35px] mt-[20px] text-white">new</span>}
+              {_destroy && <span className="indicator-item badge badge-neutral right-[56px] mt-[20px] text-grey bg-slate-600 fadeIn">Not visible</span>}
               <pre><code>{`{`}</code></pre>
               <pre>
                 {(id !== "" && !_destroy) ? (
                   <pre className="text-white mb-1 ml-4">
                     <code className='bg-info p-1 px-2 rounded-md inline relative'>
                       id: <span className='text-white'>"{id}"</span>
-                      <div className='absolute left-[-26px] top-[4px] cursor-pointer'>
-                        <IconInfo />
-                      </div>
+                      {touched && <InfoTooltip tipMessage="To update" className="tooltip-accent" open/>} 
                     </code>
                   </pre>
                 ) : (
@@ -39,7 +38,10 @@ const Overview = ({ values }: OverviewProps) => {
               </pre>
               {_destroy && (
                 <pre className="text-white mt-2 ml-4">
-                  <code className='bg-error py-1 rounded-md px-2'>_destroy: "1"</code>
+                  <code className='bg-error py-1 rounded-md px-2 relative'>
+                    _destroy: {_destroy ? "true" : "false"}
+                    <InfoTooltip tipMessage="To delete" className="tooltip-warning" open/>
+                  </code>
                 </pre> 
               )}
               <br/>

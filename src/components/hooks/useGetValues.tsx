@@ -15,8 +15,10 @@ export const FormValuesProvider = ({ children }: { children: React.ReactNode }) 
   }, []);
 
   const handleStoreValues = (values: ItemProps[]) => {
+    // know if current values are different from stored values
     setStoredValues(values);
     localStorage.setItem("formValues", JSON.stringify(values));
+    
   };
 
   return (

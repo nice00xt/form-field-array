@@ -4,6 +4,7 @@ export type ItemProps = {
   last_name: string;
   _destroy?: string;
   form_id?: string;
+  touched?: string;
 };
 
 export type FormValues = {
@@ -11,7 +12,7 @@ export type FormValues = {
     id: string;
     name: string;
     last_name: string;
-    _destroy?: string;
+    _destroy?: boolean;
   }[];
 };
 

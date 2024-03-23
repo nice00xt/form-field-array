@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import { useFormContext, Controller } from 'react-hook-form';
 
@@ -27,6 +26,7 @@ const TextInput = ({ label, placeholder, name, errors, ...rest }: InputProps) =>
             type="text"
             placeholder={placeholder}
             className="input input-bordered"
+            autoComplete="off"
             {...rest}
           />
         )}

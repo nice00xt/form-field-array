@@ -1,4 +1,6 @@
+import { forwardRef } from "react";
 import { ErrorMessage } from "@hookform/error-message";
+import { useFormContext, Controller } from 'react-hook-form';
 
 type InputProps = {
   label: string;
@@ -8,18 +10,26 @@ type InputProps = {
   errors: any;
 };
 
-const Input = ({ label, placeholder, name, errors, ...props }: InputProps) => {
+const TextInput = ({ label, placeholder, name, errors, ...rest }: InputProps) => {
+  const { control } = useFormContext();
 
   return (
     <div className="w-full flex flex-col relative mb-4">
       <label className="label">
         <span className="label-text">{label}</span>
       </label> 
-      <input
-        {...props}
-        type="text"
-        placeholder={placeholder}
-        className={`input input-bordered ${errors[name] ? 'input-error' : ''}`}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <input
+            {...field}
+            type="text"
+            placeholder={placeholder}
+            className="input input-bordered"
+            {...rest}
+          />
+        )}
       />
       <ErrorMessage
         errors={errors}
@@ -29,7 +39,7 @@ const Input = ({ label, placeholder, name, errors, ...props }: InputProps) => {
         )}
       />
     </div>
-  )
+  );
 };
 
-export default Input;
+export default TextInput;

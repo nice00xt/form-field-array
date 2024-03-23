@@ -1,19 +1,21 @@
 import { IconInfo } from "../Icons";
-import { useGetValues } from "../hooks/useGetValues";
+import { useFormValues } from "../hooks/useGetValues";
 import type { ItemProps, OverviewProps } from "../types";
 
 const Overview = ({ values }: OverviewProps) => {
-  // const { storedValues } = useGetValues();
+  const { storedValues } = useFormValues();
+
+  if (!storedValues) return null;
 
   return (
     <div className='w-full flex flex-col items-center'>
       <h2>Overview</h2>
-      <div className="mockup-code mt-5 text-left w-full lg:max-w-[400px]">
+      <div className="mt-5 text-left w-full lg:max-w-[400px]">
         <pre className='mb-2'><code className='text-white'>Items: [</code></pre>
-        {values.items.map(({ id, name, last_name, _destroy, form_id }: ItemProps, index: number) => {
+        {storedValues.map(({ id, name, last_name, _destroy, form_id }: ItemProps, index: number) => {
           return (
             <div key={index} className={`indicator first-letter:after:mb-4 py-4 rounded-lg mx-4 block mb-4 w-auto px-2 transition-all ${_destroy ? "bg-slate-800" : "bg-slate-700"}`}>
-              {id === "" && <span className="indicator-item badge badge-success right-[35px] mt-[20px] text-white">new</span>}
+              {(id === "" && !_destroy) && <span className="indicator-item badge badge-success right-[35px] mt-[20px] text-white">new</span>}
               <pre><code>{`{`}</code></pre>
               <pre>
                 {(id !== "" && !_destroy) ? (
@@ -41,9 +43,9 @@ const Overview = ({ values }: OverviewProps) => {
                 </pre> 
               )}
               <br/>
-              <pre><code className='ml-4'>form_id: "{form_id}"</code></pre>
+              <pre className="w-[%] truncate"><code className='ml-4'>form_id: "{form_id}"</code></pre>
               <pre><code>{`},`}</code></pre>
-              <pre className='mb-4 text-[12px] absolute right-[-7px] bottom-[-6px]'>
+              <pre className='mb-4 text-[12px] absolute right-[12px] bottom-[-6px]'>
                 <code>index: <span className='text-blue-300'>{index}</span></code>
               </pre>
             </div>

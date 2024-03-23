@@ -1,20 +1,10 @@
-import { IconInfo, IconTrash } from "../Icons";
-
-type ItemProps = {
-  id: string;
-  name: string;
-  last_name: string;
-  _destroy?: string;
-  form_id: string;
-};
-
-type OverviewProps = {
-  values: {
-    items: ItemProps[];
-  }
-};
+import { IconInfo } from "../Icons";
+import { useGetValues } from "../hooks/useGetValues";
+import type { ItemProps, OverviewProps } from "../types";
 
 const Overview = ({ values }: OverviewProps) => {
+  // const { storedValues } = useGetValues();
+
   return (
     <div className='w-full flex flex-col items-center'>
       <h2>Overview</h2>

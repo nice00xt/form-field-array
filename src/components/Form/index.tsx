@@ -1,30 +1,15 @@
-import { useForm, useFieldArray } from "react-hook-form";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from "react";
+import { useForm, useFieldArray, set } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconTrash, IconPlus, IconSubmit } from "../Icons";
+import { useGetValues } from "../hooks/useGetValues";
 
 import * as z from "zod";
 import Input from "./Input";
-
-type FormValues = {
-  items: {
-    id: string;
-    name: string;
-    last_name: string;
-    _destroy?: string;
-  }[];
-};
+import type { FormValues } from "../types";
 
 type ItemProps = FormValues["items"][number];
-
-const initialValues = {
-  items: [
-    {
-      id: "",
-      name: "",
-      last_name: "",
-    },
-  ],
-};
 
 const formSchema = z.object({
   items: z.array(
@@ -37,10 +22,26 @@ const formSchema = z.object({
   ),
 });
 
-export const Form = () => {
-  const form = useForm({ defaultValues: initialValues, resolver: zodResolver(formSchema) });
-  const { control, handleSubmit, formState: { errors } } = form;
+const initialValues = {
+  items: [
+    {
+      id: "",
+      name: "",
+      last_name: "",
+    },
+  ],
+};
 
+export const Form = () => {
+  const { storedValues, setStoredValues } = useGetValues();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialValues,
+  });
+
+  const { control, handleSubmit, formState: { errors } } = form;
+  
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "items",
@@ -66,16 +67,20 @@ export const Form = () => {
     } as ItemProps);
   };
 
-  const handleUndo = (itemIndex: number) => {
-    update(itemIndex, {
-      ...fields[itemIndex],
-      _destroy: undefined,
-    } as ItemProps);
-  };
+  // const handleUndo = (itemIndex: number) => {
+  //   update(itemIndex, {
+  //     ...fields[itemIndex],
+  //     _destroy: undefined,
+  //   } as ItemProps);
+  // };
 
   const activeFields = fields.filter(
     (item: ItemProps) => !item._destroy
   ).length;
+
+  useEffect(() => {
+    setStoredValues(fields, 'hila');
+  }, []);
 
   return (
     <form className="form-control" onSubmit={handleSubmit(onSubmit)}>

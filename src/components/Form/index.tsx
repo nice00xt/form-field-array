@@ -38,7 +38,8 @@ type FormProps = {
 
 export const Form = ({ data }: FormProps) => {
   const { handleStoreValues } = useFormValues();
-  const [undoIndex, setUndo] = useState<number | null>(null);
+  const [undoIndex, setUndo] = useState<number[] | []>([]);
+  const [openUndo, setOpenUndo] = useState<boolean>(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -66,11 +67,16 @@ export const Form = ({ data }: FormProps) => {
       return remove(itemIndex);
     }
 
-    setUndo(itemIndex);
+    // add item to undo array
+    setOpenUndo(true);
+    const addedIndex = [itemIndex, ...undoIndex];
+    setUndo(addedIndex);
+    
     return update(itemIndex, {
       ...fields[itemIndex],
       _destroy: true,
     } as ItemProps);
+    
   };
 
   const handleUndo = (itemIndex: number) => {
@@ -78,7 +84,14 @@ export const Form = ({ data }: FormProps) => {
 
     delete updatedItem._destroy;
     update(itemIndex, updatedItem);
-    setUndo(null);
+
+    // Remove item from undo array
+    const removedIndex = undoIndex.filter((index) => index !== itemIndex);
+    setUndo(removedIndex);
+
+    if (undoIndex.length === 1) {
+      setOpenUndo(false);
+    }
   };
 
   const activeFields = fields.filter(
@@ -98,23 +111,28 @@ export const Form = ({ data }: FormProps) => {
     handleStoreValues(updatedItems);
   }, [fields]);
 
-
   return (
     <FormProvider {...form}>
       <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
-        {undoIndex !== null && (
+        {openUndo && (
           <div className="toast toast-top toast-start z-50">
             <div className="flex flex-row justify-end items-center">
-              <div className="btn bg-slate-600 hover:bg-slate-700" onClick={() => handleUndo(undoIndex)}>
-                <span className="text-white">Undo</span>
+              <div className="btn bg-slate-600 hover:bg-slate-700" onClick={() => {
+                const lastItem = undoIndex[undoIndex.length - 1];
+                handleUndo(lastItem)
+              }}>
+                <div className="text-white">
+                  <span className="badge mr-2">{undoIndex.length}</span>
+                  <span>Undo</span>
+                </div>
                 <IconUndo />
               </div>
-              <button
+              <span
                 className="btn btn-sm btn-circle bg-slate-600 hover:bg-slate-700 ml-2"
-                onClick={() => setUndo(null)}
+                onClick={() => setOpenUndo(false)}
               >
                 ✕
-              </button>
+              </span>
             </div>
           </div>
         )}

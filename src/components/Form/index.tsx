@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { useFormValues } from "../hooks/useGetValues";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isEqual } from "lodash";
-import { IconTrash, IconPlus, IconSubmit } from "../Icons";
+import { IconTrash, IconPlus, IconSubmit, IconUndo } from "../Icons";
 
 import * as z from "zod";
 import TextInput from "./TextInput";
@@ -38,7 +37,8 @@ type FormProps = {
 };
 
 export const Form = ({ data }: FormProps) => {
-  const { storedValues, handleStoreValues } = useFormValues();
+  const { handleStoreValues } = useFormValues();
+  const [undoIndex, setUndo] = useState<number | null>(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -66,19 +66,20 @@ export const Form = ({ data }: FormProps) => {
       return remove(itemIndex);
     }
 
+    setUndo(itemIndex);
     return update(itemIndex, {
       ...fields[itemIndex],
       _destroy: true,
     } as ItemProps);
   };
 
-  // const handleUndo = (itemIndex: number) => {
-  //   update(itemIndex, {
-  //     ...fields[itemIndex],
-  //     _destroy: undefined,
-  //   } as ItemProps);
-  // };
+  const handleUndo = (itemIndex: number) => {
+    const updatedItem = { ...fields[itemIndex] };
 
+    delete updatedItem._destroy;
+    update(itemIndex, updatedItem);
+    setUndo(null);
+  };
 
   const activeFields = fields.filter(
     (item: ItemProps) => !item._destroy
@@ -101,6 +102,23 @@ export const Form = ({ data }: FormProps) => {
   return (
     <FormProvider {...form}>
       <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
+        {undoIndex !== null && (
+          <div className="toast toast-top toast-start z-50">
+            <div className="flex flex-row justify-end items-center">
+              <div className="btn bg-slate-600 hover:bg-slate-700" onClick={() => handleUndo(undoIndex)}>
+                <span className="text-white">Undo</span>
+                <IconUndo />
+              </div>
+              <button
+                className="btn btn-sm btn-circle bg-slate-600 hover:bg-slate-700 ml-2"
+                onClick={() => setUndo(null)}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+          
         <h2>Form Field Arrays</h2>
         <div className="flex flex-col justify-between h-full">
           <div>

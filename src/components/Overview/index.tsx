@@ -9,7 +9,7 @@ const Overview = () => {
 
   return (
     <div className='w-full flex flex-col items-center'>
-      <h2>Overview</h2>
+      <h2 className="font-bold">Overview</h2>
       <div className="mt-5 text-left w-full lg:max-w-[400px]">
         <pre className='mb-2'><code className='text-white'>Items: [</code></pre>
         {storedValues.map(({ id, name, last_name, _destroy, form_id, touched }: ItemProps, index: number) => {
@@ -45,7 +45,7 @@ const Overview = () => {
                 </pre> 
               )}
               <br/>
-              <pre className="w-[%] truncate"><code className='ml-4'>form_id: "{form_id}"</code></pre>
+              <pre className="w-[80%] truncate"><code className='ml-4'>form_id: "{form_id}"</code></pre>
               <pre><code>{`},`}</code></pre>
               <pre className='mb-4 text-[12px] absolute right-[12px] bottom-[-6px]'>
                 <code>index: <span className='text-blue-300'>{index}</span></code>

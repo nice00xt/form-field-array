@@ -37,9 +37,12 @@ type FormProps = {
 };
 
 export const Form = ({ data }: FormProps) => {
+  const [isModalOpen, setOpenModal] = useState<boolean>(false);
   const { handleStoreValues } = useFormValues();
   const [undoIndex, setUndo] = useState<number[] | []>([]);
+
   const [openUndo, setOpenUndo] = useState<boolean>(false);
+  const [formValues, setFormValues] = useState<ItemProps[] | []>([]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -55,7 +58,8 @@ export const Form = ({ data }: FormProps) => {
 
   const onSubmit = (values: FormValues) => {
     handleStoreValues(fields);
-    console.log(values);
+    setFormValues(values);
+    setOpenModal(true);
   };
 
   const handleAddNew = () => {
@@ -137,15 +141,15 @@ export const Form = ({ data }: FormProps) => {
           </div>
         )}
           
-        <h2>Form Field Arrays</h2>
+        <h2 className="font-bold">Form Field Arrays</h2>
         <div className="flex flex-col justify-between h-full">
-          <div>
+          <div className="form-container">
             {fields.map((field, index) => {
               if ((field as ItemProps)?._destroy) return null;
 
               return (
-                <div key={field.form_id} className="card bg-neutral mt-4">
-                  <h2>Form</h2>
+                <div key={field.form_id} className="card form-item bg-neutral mt-4">
+                  <h2>Form <span className="font-bold ml-2 badge text-counter" /></h2>
                   {activeFields > 1 && (
                     <button
                       className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -193,6 +197,22 @@ export const Form = ({ data }: FormProps) => {
           </div>
         </div>
       </form>
+
+      <dialog id="my_modal_1" className="modal" open={isModalOpen}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-accent">Information Sent Successfully!</h3>
+          <p className="py-4">(Just imagine that the information was sent; nothing is actually connected to a server 😛)</p>
+          <span className="font-bold">Result:</span>
+          <div className="text-left bg-slate-800 p-4 rounded-lg mt-4">
+            <pre>{JSON.stringify(formValues, null, 2)}</pre>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn" onClick={() => setOpenModal(false)}>Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </FormProvider>
   );
 };

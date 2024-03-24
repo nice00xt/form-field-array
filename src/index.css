@@ -16,3 +16,15 @@
   animation-duration: .9s;
   animation-fill-mode: forwards;
 }
+
+.form-container {
+  counter-reset: form-counter;
+}
+
+.form-item {
+  counter-increment: form-counter;
+}
+
+.form-item .text-counter::before {
+  content: counter(form-counter);
+}

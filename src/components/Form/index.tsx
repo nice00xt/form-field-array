@@ -42,7 +42,7 @@ export const Form = ({ data }: FormProps) => {
   const [undoIndex, setUndo] = useState<number[] | []>([]);
 
   const [openUndo, setOpenUndo] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<ItemProps[] | []>([]);
+  const [formValues, setFormValues] = useState<FormValues | []>([]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -200,16 +200,12 @@ export const Form = ({ data }: FormProps) => {
 
       <dialog id="my_modal_1" className="modal" open={isModalOpen}>
         <div className="modal-box">
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setOpenModal(false)}>✕</button>
           <h3 className="font-bold text-lg text-accent">Information Sent Successfully!</h3>
           <p className="py-4">(Just imagine that the information was sent; nothing is actually connected to a server 😛)</p>
           <span className="font-bold">Result:</span>
           <div className="text-left bg-slate-800 p-4 rounded-lg mt-4">
             <pre>{JSON.stringify(formValues, null, 2)}</pre>
-          </div>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn" onClick={() => setOpenModal(false)}>Close</button>
-            </form>
           </div>
         </div>
       </dialog>

@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+# Form field arrays - overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I have created a simple functionality for multiple forms by adding the most common features that we could encounter in everyday life as a frontend developer. You can also visualize how it works and what data is necessary for a server to save changes.
 
-Currently, two official plugins are available:
+![Screenshot 2024-03-24 at 6 59 37 PM](https://github.com/nice00xt/form-field-array/assets/2046454/5b606037-fdaf-45f6-9be7-0d16fed07f5f)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Keep in mind that the parameters requested by the backend are not always the same. I hope the overview can quickly help you understand how this functionality works and make your own implementations if necessary.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Getting Started
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Tech Stacks
+- Tailwind CSS
+- Daisty UI
+- Vite
+- react-hook-form
+- Zod
+
